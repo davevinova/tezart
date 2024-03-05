@@ -79,10 +79,7 @@ class Signature extends Equatable {
       }
 
       var hashedBytes = crypto.hashWithDigestSize(size: 256, bytes: watermarkedBytes);
-      var secretKey = keystore.secretKey;
-      var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
-      var signed = crypto.signDetached(
-          bytes: hashedBytes, secretKey: secretKeyBytes);
+      var signed = keystore.sign(hashedBytes);
       return signed;
     });
   }

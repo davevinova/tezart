@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:blockchain_signer/blockchain_signer.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pinenacl/api.dart';
 
 // internal Library
 //
@@ -171,6 +172,14 @@ class Keystore extends Equatable {
   /// The seed of this.
   String get seed => crypto.catchUnhandledErrors(() {
         return crypto.secretKeyToSeed(secretKey);
+      });
+
+  /// Returns [ByteList] of [bytes] signed by this.
+  Future<ByteList> sign(Uint8List bytes) async => crypto.catchUnhandledErrors(() async {
+        var secretKeyBytes = crypto.decodeWithoutPrefix(secretKey);
+        var signed = crypto.signDetached(
+          bytes: bytes, secretKey: secretKeyBytes);
+        return signed;
       });
 
   /// Returns [tezart.Signature] of [bytes] signed by this.
